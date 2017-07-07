@@ -54,7 +54,7 @@ class LPTools(object):
         old_description = bug.description
         if msg not in old_description:
             new_description = msg + old_description
-            pdb.set_trace()
+            exit()
             bug.newMessage(content=msg)
             bug.description=new_description
             bug.lp_save()

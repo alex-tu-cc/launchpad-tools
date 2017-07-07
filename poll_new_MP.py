@@ -38,7 +38,6 @@ def main():
     for mp in mps:
         print mp.self_link
         match = re.search('Bug:.*\+bug/([0-9]+)',mp.description)
-        pdb.set_trace()
         for index in range(1,match.lastindex+1):
             lptool.comment_bug(match.group(index),mp.web_link)
     # ex. ppa:alextu/test1
