@@ -24,6 +24,7 @@ def main():
     parser.add_argument('--project', required=True, help="project name")
     #group.add_argument('--project',require=True, help=" project name" )
 
+    parser.add_argument('--credentials_file', help='the pull path of credental file which could be used to store unencrypted credential. without this, it will encrypt it by default')
     parser.add_argument('--credental_application', help='the credental application name')
 
     parser.add_argument("-l", "--log", dest="logLevel", choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
@@ -32,7 +33,7 @@ def main():
     if args.logLevel:
         logging.basicConfig(level=logging.getLevelName(args.logLevel))
     logger = logging.getLogger()
-    lptool = LPTools(args.credental_application,args.project)
+    lptool = LPTools(args.credentials_file, args.credental_application,args.project)
     mps = lptool.get_mps()
     for mp in mps:
         print mp.self_link

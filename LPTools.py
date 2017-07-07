@@ -27,11 +27,11 @@ class LPTools(object):
     credental_application = "hello";
     current_project = None;
     logger=logging.getLogger()
-    def __init__(self, credental_application=None, project=None):
+    def __init__(self, credentials_file, credental_application=None, project=None):
         """TODO: to be defined1. """
         if credental_application != None:
             self.credental_application = credental_application
-        self.lp = Launchpad.login_with(self.credental_application, 'production', self.cachedir)
+        self.lp = Launchpad.login_with(self.credental_application, 'production', self.cachedir,credentials_file= credentials_file )
         self.setCurrentProject(project)
         self.logger.debug("initiated LPTool")
 
@@ -54,6 +54,7 @@ class LPTools(object):
         old_description = bug.description
         if msg not in old_description:
             new_description = msg + old_description
+            pdb.set_trace()
             bug.newMessage(content=msg)
             bug.description=new_description
             bug.lp_save()
@@ -82,7 +83,7 @@ def main():
     for mp in mps:
         print mp.self_link
         match = re.search('Bug:.*\+bug/([0-9]+)',mp.description)
-        pdb.set_trace()
+        #pdb.set_trace()
         lptool.comment_bug(match.group(1),mp.web_link)
     # ex. ppa:alextu/test1
 
