@@ -4,18 +4,13 @@
 # get the merge url list
 
 
+import argparse
 from argparse import ArgumentParser
 from launchpadlib.launchpad import Launchpad
 import logging
 import os
 import pdb
 import re
-
-
-# https://stackoverflow.com/questions/14097061/easier-way-to-enable-verbose-logging
-import argparse
-
-#            logger.warning('Protocol problem: %s', 'connection reset', extra=d)
 
 class LPTools(object):
     """Docstring for MyClass. """
@@ -46,7 +41,7 @@ class LPTools(object):
         """get merge proposals of current project"""
         return self.current_project.getMergeProposals()
 
-    def comment_bug(self,bugid,comment):
+    def comment_bug(self,bugid,comment,dry_run = False):
         """ commented something in the bug id"""
         bug_url=self.bug_base_url+bugid
         bug=self.lp.load(bug_url)
@@ -54,38 +49,12 @@ class LPTools(object):
         old_description = bug.description
         if msg not in old_description:
             new_description = msg + old_description
-            pdb.set_trace()
-            bug.newMessage(content=msg)
-            bug.description=new_description
-            bug.lp_save()
+            if dry_run == False:
+                bug.newMessage(content=msg)
+                bug.description=new_description
+                bug.lp_save()
+            else:
+                print("dry run...")
             self.logger.info("comment LP: "+bugid)
         else:
             self.logger.debug("message already there in LP: "+bugid)
-
-def main():
-    parser = ArgumentParser(prog="launchpad_merge")
-    #group = parser.add_mutually_exclusive_group()
-    #parser.add_argument("type", type=str, choices=['view', 'message'])
-    parser.add_argument('--url', required=True, help="api url, ex. https://api.launchpad.net/1.0/somerville")
-    #group.add_argument('--project',require=True, help=" project name" )
-
-    parser.add_argument('--credental_application', help='the credental application name')
-
-    parser.add_argument('-d', '--disable', action="store_true", help = "boolean")
-    parser.add_argument("-l", "--log", dest="logLevel", choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
-    args = parser.parse_args()
-
-    if args.logLevel:
-        logging.basicConfig(level=logging.getLevelName(args.logLevel))
-
-    lptool = LPTools(args.credental_application,args.url)
-    mps = lptool.get_mps()
-    for mp in mps:
-        print mp.self_link
-        match = re.search('Bug:.*\+bug/([0-9]+)',mp.description)
-        #pdb.set_trace()
-        lptool.comment_bug(match.group(1),mp.web_link)
-    # ex. ppa:alextu/test1
-
-if __name__ == "__main__":
-    main()

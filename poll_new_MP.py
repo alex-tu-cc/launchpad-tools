@@ -23,6 +23,7 @@ def main():
     #parser.add_argument("type", type=str, choices=['view', 'message'])
     parser.add_argument('--project', required=True, help="project name")
     #group.add_argument('--project',require=True, help=" project name" )
+    parser.add_argument('--dry_run',action="store_true", help=" dry run" )
 
     parser.add_argument('--credentials_file', help='the pull path of credental file which could be used to store unencrypted credential. without this, it will encrypt it by default')
     parser.add_argument('--credental_application', help='the credental application name')
@@ -38,9 +39,8 @@ def main():
     for mp in mps:
         print mp.self_link
         match = re.search('Bug:.*\+bug/([0-9]+)',mp.description)
-        pdb.set_trace()
         for index in range(1,match.lastindex+1):
-            lptool.comment_bug(match.group(index),mp.web_link)
+            lptool.comment_bug(match.group(index),mp.web_link, dry_run=args.dry_run)
     # ex. ppa:alextu/test1
 
 if __name__ == "__main__":
