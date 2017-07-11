@@ -3,5 +3,6 @@
 # setup.py that excludes installing the "tests" package
 
 
-def test_success():
+def test_init():
+    print("[TODO]unitest")
     assert True
